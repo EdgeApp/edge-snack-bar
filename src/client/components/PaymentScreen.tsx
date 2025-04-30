@@ -72,15 +72,9 @@ const QuantitySection = styled.div`
   margin: 30px 0;
 `;
 
-const QuantityLabel = styled.div`
-  margin-bottom: 15px;
-  font-size: 21px;
-`;
-
 const QuantityButtons = styled.div`
   display: flex;
   gap: 12px;
-  margin-bottom: 2rem;
 `;
 
 const QuantityButton = styled.button<{ active: boolean }>`
@@ -247,7 +241,6 @@ export const PaymentScreen = () => {
         )}
       </QRContainer>
       <QuantitySection>
-        <QuantityLabel>Quantity</QuantityLabel>
         <QuantityButtons>
           {[1, 2, 3, 4, 5, 6, 7, 8].map(num => (
             <QuantityButton
