@@ -1,0 +1,11 @@
+{
+    "apps": [
+      {
+        "name": "snacksServer",
+        "script": "lib/server/index.js",
+        "error_file": "/var/log/pm2/snacksServer.error.log",
+        "out_file": "/var/log/pm2/snacksServer.out.log"
+      }
+    ]
+  }
+  

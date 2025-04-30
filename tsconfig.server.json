@@ -1,0 +1,11 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "outDir": "lib",
+    "module": "commonjs",
+    "target": "es2020",
+    "sourceMap": true
+  },
+  "include": ["src/server/**/*", "src/common/**/*", "src/config.ts"],
+  "exclude": ["src/client"]
+} 
