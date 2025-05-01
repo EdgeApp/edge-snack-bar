@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { QRCodeSVG } from 'qrcode.react';
 import { asObject, asString } from 'cleaners';
-import { mul, round } from 'biggystring';
+import { div, mul, round } from 'biggystring';
 import { Asset } from '../../common/types';
 import { retryFetch } from '../../common/utils';
 
@@ -127,11 +127,12 @@ export const PaymentScreen = () => {
 
   const fetchRate = async () => {
     try {
-      const response = await retryFetch(`https://rates1.edge.app/v1/exchangeRate?currency_pair=USD_${asset.currencyCode}`);
+      const response = await retryFetch(`https://rates1.edge.app/v1/exchangeRate?currency_pair=${asset.currencyCode}_USD`);
       const data = await response.json();
       const cleaned = asRatesResponse(data);
       console.log('exchangeRate', cleaned.exchangeRate);
-      setBaseAmount(cleaned.exchangeRate);
+      const exchangeRate = div('1', cleaned.exchangeRate, 18);
+      setBaseAmount(exchangeRate);
     } catch (error) {
       console.error('Failed to fetch rate:', error);
     }
