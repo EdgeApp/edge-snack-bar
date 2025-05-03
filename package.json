@@ -7,12 +7,16 @@
     "configure": "configure",
     "build.web": "webpack --mode production",
     "build.server": "tsc -p tsconfig.server.json",
-    "prepare": "npm run build.server && npm run build.web",
+    "prepare": "husky",
     "start": "node lib/server/index.js",
     "start.dev": "node -r sucrase/register src/server/index.ts",
     "start.web": "webpack serve --mode development",
     "lint": "eslint . --ext .ts,.tsx",
-    "fix": "eslint . --ext .ts,.tsx --fix"
+    "fix": "eslint . --ext .ts,.tsx --fix",
+    "clean": "rimraf lib dist",
+    "precommit": "npm run lint && npm run test",
+    "postinstall": "npm run prepare",
+    "test": ""
   },
   "dependencies": {
     "axios": "^1.6.7",
@@ -43,6 +47,7 @@
     "eslint-plugin-react-hooks": "^5.2.0",
     "file-loader": "^6.2.0",
     "html-webpack-plugin": "^5.6.0",
+    "husky": "^9.1.7",
     "prettier": "^3.5.3",
     "sucrase": "^3.35.0",
     "ts-loader": "^9.5.1",
