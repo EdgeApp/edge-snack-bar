@@ -5,10 +5,11 @@ module.exports = {
   entry: './src/client/index.tsx',
   output: {
     path: path.resolve(__dirname, 'dist'),
-    filename: 'bundle.js'
+    filename: 'bundle.js',
+    sourceMapFilename: '[file].map'
   },
   mode: 'development',
-  devtool: 'eval-source-map',
+  devtool: 'inline-source-map',
   resolve: {
     extensions: ['.ts', '.tsx', '.js']
   },
@@ -16,7 +17,16 @@ module.exports = {
     rules: [
       {
         test: /\.(ts|tsx)$/,
-        use: 'ts-loader',
+        use: {
+          loader: 'ts-loader',
+          options: {
+            compilerOptions: {
+              sourceMap: true,
+              inlineSources: true,
+              sourceRoot: '/'
+            }
+          }
+        },
         exclude: /node_modules/
       },
       {

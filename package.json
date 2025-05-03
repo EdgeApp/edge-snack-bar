@@ -12,7 +12,7 @@
     "start.dev": "node -r sucrase/register src/server/index.ts",
     "start.web": "webpack serve --mode development",
     "lint": "eslint . --ext .ts,.tsx",
-    "lint:fix": "eslint . --ext .ts,.tsx --fix"
+    "fix": "eslint . --ext .ts,.tsx --fix"
   },
   "dependencies": {
     "axios": "^1.6.7",
