@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from 'styled-components'
 
 const HeaderContainer = styled.header`
   background-color: #0c2550;
@@ -11,12 +11,12 @@ const HeaderContainer = styled.header`
   position: relative;
   top: 0;
   left: 0;
-`;
+`
 
 const Logo = styled.img`
   height: 45px;
   margin: 0 12px;
-`;
+`
 
 const Title = styled.h1`
   color: white;
@@ -24,14 +24,19 @@ const Title = styled.h1`
   font-size: 2.25rem;
   display: flex;
   align-items: center;
-`;
+`
 
 export const Header = () => (
   <HeaderContainer>
     <Title>
       Welcome to the{' '}
-      <Logo src={`https://raw.githubusercontent.com/EdgeApp/edge-brand-guide/refs/heads/master/Logo/Primary/Edge_Primary_Logo_MintWhite.png`} alt="Edge" />
-      {' '}snack bar
+      <Logo
+        src={
+          'https://raw.githubusercontent.com/EdgeApp/edge-brand-guide/refs/heads/master/Logo/Primary/Edge_Primary_Logo_MintWhite.png'
+        }
+        alt="Edge"
+      />{' '}
+      snack bar
     </Title>
   </HeaderContainer>
-); 
+)

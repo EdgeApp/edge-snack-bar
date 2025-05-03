@@ -9,7 +9,7 @@
     "build.server": "tsc -p tsconfig.server.json",
     "prepare": "npm run build.server && npm run build.web",
     "start": "node lib/server/index.js",
-    "start.dev":"node -r sucrase/register src/server/index.ts",
+    "start.dev": "node -r sucrase/register src/server/index.ts",
     "start.web": "webpack serve --mode development",
     "lint": "eslint . --ext .ts,.tsx",
     "lint:fix": "eslint . --ext .ts,.tsx --fix"
@@ -28,6 +28,7 @@
     "styled-components": "^6.1.8"
   },
   "devDependencies": {
+    "@eslint/js": "^9.26.0",
     "@types/cors": "^2.8.17",
     "@types/node": "^20.11.0",
     "@types/react": "^18.2.0",
@@ -38,6 +39,8 @@
     "eslint": "^9.25.1",
     "eslint-config-prettier": "^10.1.2",
     "eslint-plugin-prettier": "^5.2.6",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^5.2.0",
     "file-loader": "^6.2.0",
     "html-webpack-plugin": "^5.6.0",
     "prettier": "^3.5.3",

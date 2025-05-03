@@ -1,8 +1,8 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import styled, { createGlobalStyle } from 'styled-components';
-import { Header } from './components/Header';
-import { AssetGrid } from './components/AssetGrid';
-import { PaymentScreen } from './components/PaymentScreen';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import styled, { createGlobalStyle } from 'styled-components'
+import { Header } from './components/Header'
+import { AssetGrid } from './components/AssetGrid'
+import { PaymentScreen } from './components/PaymentScreen'
 
 const GlobalStyle = createGlobalStyle`
   * {
@@ -16,13 +16,13 @@ const GlobalStyle = createGlobalStyle`
     margin: 0;
     padding: 0;
   }
-`;
+`
 
 const AppContainer = styled.div`
   height: 100vh;
   display: flex;
   flex-direction: column;
-`;
+`
 
 const App = () => {
   return (
@@ -36,7 +36,7 @@ const App = () => {
         </Routes>
       </AppContainer>
     </Router>
-  );
-};
+  )
+}
 
-export default App; 
+export default App

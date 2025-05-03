@@ -1,4 +1,12 @@
-import { asEither, asNull, asNumber, asObject, asOptional, asString, asValue } from "cleaners";
+import {
+  asEither,
+  asNull,
+  asNumber,
+  asObject,
+  asOptional,
+  asString,
+  asValue
+} from 'cleaners'
 
 export const asAsset = asObject({
   chainPluginId: asString,
@@ -10,11 +18,11 @@ export const asAsset = asObject({
   uriEvmChainId: asOptional(asNumber),
   tokenNumDecimals: asOptional(asNumber),
   publicAddress: asString
-});
+})
 
-export type Asset = ReturnType<typeof asAsset>;
+export type Asset = ReturnType<typeof asAsset>
 
 export interface AssetDoc extends Asset {
-  _id: string;
-  _rev: string;
-} 
+  _id: string
+  _rev: string
+}
