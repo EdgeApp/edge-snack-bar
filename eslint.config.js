@@ -2,9 +2,11 @@ const globals = require('globals')
 const prettier = require('eslint-config-prettier')
 
 module.exports = [
+  {
+    ignores: ['**/lib/**', '**/dist/**']
+  },
   prettier,
   {
-    ignores: ['lib/**', 'dist/**'],
     files: ['**/*.ts', '**/*.tsx', '**/*.js', '**/*.jsx'],
     languageOptions: {
       globals: {
@@ -34,7 +36,6 @@ module.exports = [
     }
   },
   {
-    ignores: ['lib/**', 'dist/**'],
     files: ['**/*.ts', '**/*.tsx'],
     plugins: {
       '@typescript-eslint': require('@typescript-eslint/eslint-plugin'),
