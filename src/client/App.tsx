@@ -1,7 +1,9 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import * as React from 'react'
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
 import styled, { createGlobalStyle } from 'styled-components'
-import { Header } from './components/Header'
+
 import { AssetGrid } from './components/AssetGrid'
+import { Header } from './components/Header'
 import { PaymentScreen } from './components/PaymentScreen'
 
 const GlobalStyle = createGlobalStyle`
@@ -11,7 +13,7 @@ const GlobalStyle = createGlobalStyle`
     box-sizing: border-box;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   }
-  
+
   body {
     margin: 0;
     padding: 0;
@@ -24,7 +26,7 @@ const AppContainer = styled.div`
   flex-direction: column;
 `
 
-const App = () => {
+const App = (): React.ReactElement => {
   return (
     <Router>
       <GlobalStyle />

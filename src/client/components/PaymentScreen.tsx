@@ -1,10 +1,12 @@
-import { useLocation, useNavigate } from 'react-router-dom'
-import { useEffect, useState } from 'react'
-import styled from 'styled-components'
-import { QRCodeSVG } from 'qrcode.react'
-import { asObject, asString } from 'cleaners'
 import { div, mul, round } from 'biggystring'
-import { Asset } from '../../common/types'
+import { asObject, asString } from 'cleaners'
+import { QRCodeSVG } from 'qrcode.react'
+import * as React from 'react'
+import { useEffect, useState } from 'react'
+import { useLocation, useNavigate } from 'react-router-dom'
+import styled from 'styled-components'
+
+import type { Asset } from '../../common/types'
 import { retryFetch } from '../../common/utils'
 
 const REFRESH_RATE = 60000
@@ -86,7 +88,7 @@ const QuantityButton = styled.button<{ active: boolean }>`
   border-radius: 999px;
   border: none;
   cursor: pointer;
-  background: ${(props) => (props.active ? '#98FB98' : '#f0f0f0')};
+  background: ${props => (props.active ? '#98FB98' : '#f0f0f0')};
   font-size: 21px;
   &:hover {
     opacity: 0.8;
@@ -122,52 +124,56 @@ const asRatesResponse = asObject({
   exchangeRate: asString
 })
 
-export const PaymentScreen = () => {
+export const PaymentScreen = (): React.ReactElement | null => {
   const { state } = useLocation()
   const asset = state?.asset as Asset
   const [baseAmount, setBaseAmount] = useState<string | undefined>()
   const [quantity, setQuantity] = useState<number>(1)
   const navigate = useNavigate()
 
-  const fetchRate = async () => {
-    try {
-      const response = await retryFetch(
-        `https://rates1.edge.app/v1/exchangeRate?currency_pair=${asset.currencyCode}_USD`
-      )
-      const data = await response.json()
-      const cleaned = asRatesResponse(data)
-      console.log('exchangeRate', cleaned.exchangeRate)
-      const exchangeRate = div('1', cleaned.exchangeRate, 18)
-      setBaseAmount(exchangeRate)
-    } catch (error) {
-      console.error('Failed to fetch rate:', error)
-    }
-  }
-
   useEffect(() => {
+    const fetchRate = async (): Promise<void> => {
+      try {
+        const response = await retryFetch(
+          `https://rates1.edge.app/v1/exchangeRate?currency_pair=${asset.currencyCode}_USD`
+        )
+        const data = await response.json()
+        const cleaned = asRatesResponse(data)
+        console.log('exchangeRate', cleaned.exchangeRate)
+        const exchangeRate = div('1', cleaned.exchangeRate, 18)
+        setBaseAmount(exchangeRate)
+      } catch (error) {
+        console.error('Failed to fetch rate:', error)
+      }
+    }
+
     // Initial fetch
-    fetchRate()
+    fetchRate().catch(console.error)
 
     // Set up interval
-    const interval = setInterval(fetchRate, REFRESH_RATE)
+    const interval = setInterval(() => {
+      fetchRate().catch(console.error)
+    }, REFRESH_RATE)
 
     // Clean up interval on unmount
-    return () => clearInterval(interval)
+    return () => {
+      clearInterval(interval)
+    }
   }, [asset]) // Reset interval when asset changes
 
   const getScaledAmount = (): string => {
-    if (!baseAmount) return '0'
+    if (baseAmount == null) return '0'
     return mul(baseAmount, quantity.toString())
   }
 
-  const getIconUrl = (asset: Asset) => {
+  const getIconUrl = (asset: Asset): string => {
     const baseUrl = 'https://content.edge.app/currencyIconsV3'
-    return asset.tokenId
+    return asset.tokenId != null && asset.tokenId !== ''
       ? `${baseUrl}/${asset.chainPluginId}/${asset.tokenId}.png`
       : `${baseUrl}/${asset.chainPluginId}/${asset.chainPluginId}.png`
   }
 
-  const getChainIconUrl = (chainPluginId: string) => {
+  const getChainIconUrl = (chainPluginId: string): string => {
     const baseUrl = 'https://content.edge.app/currencyIconsV3'
     return `${baseUrl}/${chainPluginId}/${chainPluginId}.png`
   }
@@ -186,7 +192,7 @@ export const PaymentScreen = () => {
     switch (uriType) {
       case 'bip21': {
         const amount = round(scaledAmount, -8)
-        if (uriProtocol == 'monero') {
+        if (uriProtocol === 'monero') {
           return {
             amount,
             uri: `${uriProtocol}:${publicAddress}?tx_amount=${amount}`
@@ -238,16 +244,16 @@ export const PaymentScreen = () => {
         }
       }
       default:
-        throw new Error(`Unsupported URI type: ${uriType}`)
+        throw new Error(`Unsupported URI type: ${uriType as string}`)
     }
   }
 
-  if (!asset) return null
+  if (asset == null) return null
   const chainName = asset.chainName ?? asset.chainPluginId
   const displayName = `${chainName.charAt(0).toUpperCase()}${chainName.slice(1)} (${asset.currencyCode})`
 
   const getDisplayAmount = (): string => {
-    if (!baseAmount) return ''
+    if (baseAmount == null) return ''
 
     const { amount } = getPaymentUri(asset)
     return `$${quantity} (${amount} ${asset.currencyCode})`
@@ -257,7 +263,7 @@ export const PaymentScreen = () => {
     <Container>
       <AssetTitle>{'Scan to pay with ' + displayName}</AssetTitle>
       <QRContainer>
-        {baseAmount === undefined ? (
+        {baseAmount == null ? (
           <Spinner />
         ) : (
           <>
@@ -266,7 +272,7 @@ export const PaymentScreen = () => {
                 src={getIconUrl(asset)}
                 alt={asset.chainPluginId}
               />
-              {asset.tokenId && (
+              {asset.tokenId != null && asset.tokenId !== '' && (
                 <CenteredChainIcon
                   src={getChainIconUrl(asset.chainPluginId)}
                   alt={`${chainName} chain`}
@@ -279,11 +285,13 @@ export const PaymentScreen = () => {
       </QRContainer>
       <QuantitySection>
         <QuantityButtons>
-          {[1, 2, 3, 4, 5, 6, 7, 8].map((num) => (
+          {[1, 2, 3, 4, 5, 6, 7, 8].map(num => (
             <QuantityButton
               key={num}
               active={quantity === num}
-              onClick={() => setQuantity(num)}
+              onClick={() => {
+                setQuantity(num)
+              }}
             >
               {num}
             </QuantityButton>
@@ -293,7 +301,13 @@ export const PaymentScreen = () => {
       <AmountSection>
         <AmountText>{getDisplayAmount()}</AmountText>
       </AmountSection>
-      <BackButton onClick={() => navigate('/')}>Back</BackButton>
+      <BackButton
+        onClick={() => {
+          navigate('/')
+        }}
+      >
+        Back
+      </BackButton>
     </Container>
   )
 }

@@ -1,7 +1,9 @@
-import { useState, useEffect } from 'react'
-import styled from 'styled-components'
+import * as React from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Asset } from '../../common/types'
+import styled from 'styled-components'
+
+import type { Asset } from '../../common/types'
 import { getApiBaseUrl } from '../api/baseUrl'
 
 const Grid = styled.div`
@@ -50,27 +52,27 @@ const AssetName = styled.span`
   font-size: 18px;
 `
 
-export const AssetGrid = () => {
+export const AssetGrid = (): React.ReactElement => {
   const [assets, setAssets] = useState<Asset[]>([])
   const navigate = useNavigate()
 
   useEffect(() => {
-    const fetchAssets = async () => {
+    const fetchAssets = async (): Promise<void> => {
       const response = await fetch(`${getApiBaseUrl()}/api/assets`)
       const data = await response.json()
       setAssets(data)
     }
-    fetchAssets()
+    fetchAssets().catch(console.error)
   }, [])
 
-  const getIconUrl = (asset: Asset) => {
+  const getIconUrl = (asset: Asset): string => {
     const baseUrl = 'https://content.edge.app/currencyIconsV3'
-    return asset.tokenId
+    return asset.tokenId != null && asset.tokenId !== ''
       ? `${baseUrl}/${asset.chainPluginId}/${asset.tokenId}.png`
       : `${baseUrl}/${asset.chainPluginId}/${asset.chainPluginId}.png`
   }
 
-  const getChainIconUrl = (chainPluginId: string) => {
+  const getChainIconUrl = (chainPluginId: string): string => {
     const baseUrl = 'https://content.edge.app/currencyIconsV3'
     return `${baseUrl}/${chainPluginId}/${chainPluginId}.png`
   }
@@ -83,21 +85,21 @@ export const AssetGrid = () => {
           const bDisplayName = b.chainName ?? b.chainPluginId
           return aDisplayName < bDisplayName ? -1 : 1
         })
-        .map((asset) => {
+        .map(asset => {
           const { chainPluginId } = asset
           const { chainName = chainPluginId, tokenId, currencyCode } = asset
           return (
             <AssetItem
-              key={`${chainPluginId}-${tokenId}`}
-              onClick={() =>
+              key={`${chainPluginId}-${tokenId ?? ''}`}
+              onClick={() => {
                 navigate('/pay', {
                   state: { asset }
                 })
-              }
+              }}
             >
               <AssetIconContainer>
                 <AssetIcon src={getIconUrl(asset)} alt={chainPluginId} />
-                {tokenId && (
+                {tokenId != null && tokenId !== '' && (
                   <ChainIcon
                     src={getChainIconUrl(chainPluginId)}
                     alt={`${chainName} chain`}

@@ -1,3 +1,4 @@
+import * as React from 'react'
 import styled from 'styled-components'
 
 const HeaderContainer = styled.header`
@@ -26,14 +27,12 @@ const Title = styled.h1`
   align-items: center;
 `
 
-export const Header = () => (
+export const Header = (): React.ReactElement => (
   <HeaderContainer>
     <Title>
       Welcome to the{' '}
       <Logo
-        src={
-          'https://raw.githubusercontent.com/EdgeApp/edge-brand-guide/refs/heads/master/Logo/Primary/Edge_Primary_Logo_MintWhite.png'
-        }
+        src="https://raw.githubusercontent.com/EdgeApp/edge-brand-guide/refs/heads/master/Logo/Primary/Edge_Primary_Logo_MintWhite.png"
         alt="Edge"
       />{' '}
       snack bar
