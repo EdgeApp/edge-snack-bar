@@ -1,5 +1,5 @@
-import { div, mul, round } from 'biggystring'
-import { asObject, asString } from 'cleaners'
+import { mul, round } from 'biggystring'
+import { asArray, asNumber, asObject, asOptional, asString } from 'cleaners'
 import { QRCodeSVG } from 'qrcode.react'
 import * as React from 'react'
 import { useEffect, useState } from 'react'
@@ -121,7 +121,23 @@ const AmountText = styled.div`
 `
 
 const asRatesResponse = asObject({
-  exchangeRate: asString
+  targetFiat: asString,
+  crypto: asArray(
+    asObject({
+      isoDate: asOptional(asString),
+      asset: asObject({
+        pluginId: asString,
+        tokenId: asOptional(asString)
+      }),
+      rate: asNumber
+    })
+  ),
+  fiat: asArray(
+    asObject({
+      isoDate: asOptional(asString),
+      rate: asNumber
+    })
+  )
 })
 
 export const PaymentScreen = (): React.ReactElement | null => {
@@ -134,13 +150,31 @@ export const PaymentScreen = (): React.ReactElement | null => {
   useEffect(() => {
     const fetchRate = async (): Promise<void> => {
       try {
-        const response = await retryFetch(
-          `https://rates1.edge.app/v1/exchangeRate?currency_pair=${asset.currencyCode}_USD`
-        )
+        const body = {
+          targetFiat: 'USD',
+          crypto: [
+            {
+              asset: {
+                pluginId: asset.chainPluginId,
+                tokenId: asset.tokenId
+              }
+            }
+          ],
+          fiat: []
+        }
+
+        const response = await retryFetch(`https://rates3.edge.app/v3/rates`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(body)
+        })
         const data = await response.json()
         const cleaned = asRatesResponse(data)
-        console.log('exchangeRate', cleaned.exchangeRate)
-        const exchangeRate = div('1', cleaned.exchangeRate, 18)
+        const { rate } = cleaned.crypto[0]
+        console.log('exchangeRate', rate)
+        const exchangeRate = String(1 / rate)
         setBaseAmount(exchangeRate)
       } catch (error) {
         console.error('Failed to fetch rate:', error)
