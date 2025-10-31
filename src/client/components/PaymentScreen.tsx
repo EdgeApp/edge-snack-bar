@@ -223,19 +223,22 @@ export const PaymentScreen = (): React.ReactElement | null => {
       tokenNumDecimals
     } = asset
 
+    const label = encodeURIComponent('Edge Snackbar')
+    const message = encodeURIComponent(`Thanks for your puchase of snacks!`)
+
     switch (uriType) {
       case 'bip21': {
         const amount = round(scaledAmount, -8)
         if (uriProtocol === 'monero') {
           return {
             amount,
-            uri: `${uriProtocol}:${publicAddress}?tx_amount=${amount}`
+            uri: `${uriProtocol}:${publicAddress}?tx_amount=${amount}&label=${label}&message=${message}`
           }
         }
         // BIP-21 format: bitcoin:<address>?amount=<amount>
         return {
           amount,
-          uri: `${uriProtocol}:${publicAddress}?amount=${amount}`
+          uri: `${uriProtocol}:${publicAddress}?amount=${amount}&label=${label}&message=${message}`
         }
       }
       case 'eip831': {
@@ -259,14 +262,14 @@ export const PaymentScreen = (): React.ReactElement | null => {
           const contractAddress = `0x${tokenId}`
           return {
             amount,
-            uri: `ethereum:${contractAddress}@${uriEvmChainId}/transfer?address=${publicAddress}&uint256=${amountInWei}`
+            uri: `ethereum:${contractAddress}@${uriEvmChainId}/transfer?address=${publicAddress}&uint256=${amountInWei}&label=${label}&message=${message}`
           }
         } else {
           // Native ETH transfer
           const amountInWei = (Number(round(amount, -18)) * 1e18).toString()
           return {
             amount,
-            uri: `ethereum:${publicAddress}@${uriEvmChainId}?value=${amountInWei}`
+            uri: `ethereum:${publicAddress}@${uriEvmChainId}?value=${amountInWei}&label=${label}&message=${message}`
           }
         }
       }
@@ -274,13 +277,23 @@ export const PaymentScreen = (): React.ReactElement | null => {
         const amount = round(scaledAmount, -7)
         return {
           amount,
-          uri: `${uriProtocol}:pay?destination=${publicAddress}&amount=${amount}`
+          uri: `${uriProtocol}:pay?destination=${publicAddress}&amount=${amount}&label=${label}&message=${message}`
+        }
+      }
+      case 'zano': {
+        const amount = round(scaledAmount, -9)
+        const assetId = tokenId != null ? `&asset_id=${tokenId}` : ''
+        return {
+          amount,
+          uri: `${uriProtocol}:action=send&address=${publicAddress}${assetId}&amount=${amount}&label=${label}&comment=${message}`
         }
       }
       default:
         throw new Error(`Unsupported URI type: ${uriType as string}`)
     }
   }
+
+  // zano:action=send&address=ZxCkvE7zhS6JuFE5neAaTtcY8PUT2CwfLZJQWP32jrELB1Vg9oSJyGJDyRWurqX6SXSqxjGz2yrAKaMqmxDa7E8313igosBVT&amount=0.0001&comment=Some%20payment&asset_id=040a180aca4194a158c17945dd115db42086f6f074c1f77838621a4927fffa91
 
   if (asset == null) return null
   const chainName = asset.chainName ?? asset.chainPluginId

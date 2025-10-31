@@ -13,7 +13,12 @@ export const asAsset = asObject({
   chainName: asOptional(asString),
   tokenId: asEither(asString, asNull),
   currencyCode: asString,
-  uriType: asEither(asValue('bip21'), asValue('eip831'), asValue('stellar')), // Note: This could be more strict with literal types
+  uriType: asEither(
+    asValue('bip21'),
+    asValue('eip831'),
+    asValue('stellar'),
+    asValue('zano')
+  ), // Note: This could be more strict with literal types
   uriProtocol: asString, // Value before the ":". ie "bitcoin", "ethereum", "litecoin", etc.
   uriEvmChainId: asOptional(asNumber),
   tokenNumDecimals: asOptional(asNumber),
